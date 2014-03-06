@@ -16,8 +16,7 @@ require_once('class.SeedModel.php');
 class seedApp extends Controller
 {
 
-    protected $_instance,
-              $_data_dir,
+    protected $_data_dir,
               $_data_www,
               $_view_dir;
 
@@ -34,8 +33,6 @@ class seedApp extends Controller
     public function __construct($mdlId)
     {
         parent::__construct();
-
-        $this->_instance = $mdlId;
 
         $this->_data_dir = $this->_data_dir.OS.$this->_instance_name;
         $this->_data_www = $this->_data_www."/".$this->_instance_name;
