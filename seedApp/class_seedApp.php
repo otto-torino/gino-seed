@@ -20,27 +20,21 @@ class seedApp extends Controller
               $_data_www,
               $_view_dir;
 
-    private $_action,
-            $_block;
-
     /**
      * @brief Costruttore
      *
-     * @param $mdlId id istanza
+     * @param $instance_id id istanza
      *
      * @return oggetto di tipo seedApp
      */
-    public function __construct($mdlId)
+    public function __construct($instance_id)
     {
-        parent::__construct();
+        parent::__construct($instance_id);
 
         $this->_data_dir = $this->_data_dir.OS.$this->_instance_name;
         $this->_data_www = $this->_data_www."/".$this->_instance_name;
 
         $this->_view_dir = dirname(__FILE__).OS.'views';
-
-        $this->_action = cleanVar($_REQUEST, 'action', 'string', '');
-        $this->_block = cleanVar($_REQUEST, 'block', 'string', '');
     }
 
     /**
@@ -157,6 +151,11 @@ class seedApp extends Controller
         return $this->_instance_name;
     }
 
+    /**
+     * @brief View public output
+     *
+     * @return vista view
+     */
     public function view()
     {
         // codice...
@@ -175,6 +174,7 @@ class seedApp extends Controller
     {
         $this->requirePerm('can_admin');
 
+        $block = cleanVar($_REQUEST, 'block', 'string', '');
         $method = 'manageDoc';
 
         $link_frontend = "<a href=\"".$this->_home."?evt[$this->_instance_name-$method]&block=frontend\">"._("Frontend")."</a>";
@@ -182,7 +182,7 @@ class seedApp extends Controller
 
         $sel_link = $link_dft;
 
-        if($this->_block == 'frontend' && $this->userHasPerm('can_admin')) {
+        if($block == 'frontend' && $this->userHasPerm('can_admin')) {
             $buffer = $this->manageFrontend();
             $sel_link = $link_frontend;
         }
@@ -212,7 +212,6 @@ class seedApp extends Controller
      */
     public function manageSeedModel()
     {
-        $registry = registry::instance();
         $admin_table = Loader::load('AdminTable', array($this, array()));
 
         $buffer = $admin_table->backoffice(
