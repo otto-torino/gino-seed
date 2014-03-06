@@ -59,7 +59,7 @@ class seedApp extends Controller
                 'seed_app_seed_model',
             ),
             "css"=>array(
-                'seed_app.css',
+                'seedApp.css',
             ),
             "views" => array(
                 'seed_view.php' => _('Vista'),
