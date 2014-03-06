@@ -64,9 +64,11 @@ class seedApp extends Controller
             "views" => array(
                 'seed_view.php' => _('Vista'),
             ),
+            /*
             "folderStructure"=>array (
                 CONTENT_DIR.OS.'seedApp'=> null
-            )
+            ),
+            */
         );
     }
 
