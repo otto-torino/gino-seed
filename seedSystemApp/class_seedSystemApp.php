@@ -1,19 +1,19 @@
 <?php
 /**
- * @file class_seedApp.php
+ * @file class_seedSystemApp.php
  * @brief Seed App
  * @author marco guidotti
  * @author abidibo
  * @version 0.1
  * @date 2014-03-06
  */
-require_once('class.SeedModel.php');
+require_once('class.SeedSystemModel.php');
 /**
- * Class seedApp
+ * Class seedSystemApp
  * @author marco guidotti <marco.guidotti@otto.to.it>
  * @author abidibo <abidibo@gmail.com>
  */
-class seedApp extends Controller
+class seedSystemApp extends Controller
 {
 
     protected $_data_dir,
@@ -23,13 +23,11 @@ class seedApp extends Controller
     /**
      * @brief Costruttore
      *
-     * @param $instance_id id istanza
-     *
-     * @return oggetto di tipo seedApp
+     * @return oggetto di tipo seedSystemApp
      */
-    public function __construct($instance_id)
+    public function __construct()
     {
-        parent::__construct($instance_id);
+        parent::__construct();
 
         $this->_data_dir = $this->_data_dir.OS.$this->_instance_name;
         $this->_data_www = $this->_data_www."/".$this->_instance_name;
@@ -49,75 +47,29 @@ class seedApp extends Controller
     }
 
     /**
-     * @brief Restituisce alcune proprietà della classe utili per la generazione di nuove istanze
+     * @brief Restituisce alcune proprietà della classe
      *
      * @static
-     * @return lista delle proprietà utilizzate per la creazione di istanze di tipo news
+     * @return lista delle proprietà
      */
     public static function getClassElements() 
     {
         return array(
             "tables"=>array(
-                'seed_app_seed_model',
+                'seed_system_app_seed_model',
             ),
             "css"=>array(
-                'seedApp.css',
+                'seedSystemApp.css',
             ),
             "views" => array(
-                'seed_view.php' => _('Vista'),
+                'seed_system_view.php' => _('Vista'),
             ),
             /*
             "folderStructure"=>array (
-                CONTENT_DIR.OS.'seedApp'=> null
+                CONTENT_DIR.OS.'seedSystemApp'=> null
             ),
             */
         );
-    }
-
-    /**
-     * @brief Metodo invocato quando viene eliminata un'istanza di tipo blog
-     *
-     * Si esegue la cancellazione dei dati da db e l'eliminazione di file e directory 
-     * 
-     * @access public
-     * @return bool il risultato dell'operazione
-     */
-    public function deleteInstance() 
-    {
-        $this->requirePerm('can_admin');
-
-        /*
-         * delete SeedModel
-         */
-        $query = "SELECT id FROM ".SeedModel::$table." WHERE instance='$this->_instance'";
-        $a = $this->_db->selectquery($query);
-        if(sizeof($a)>0) {
-            foreach($a as $b) {
-                translation::deleteTranslations(SeedModel::$table, $b['id']);
-            }
-        }
-
-        $query = "DELETE FROM ".SeedModel::$table." WHERE instance='$this->_instance'";	
-        $result = $this->_db->actionquery($query);
-
-        /*
-         * delete css files
-         */
-        $classElements = $this->getClassElements();
-        foreach($classElements['css'] as $css) {
-            unlink(APP_DIR.OS.$this->_className.OS.baseFileName($css)."_".$this->_instance_name.".css");
-        }
-
-        /*
-         * delete folder structure
-         */
-        /*
-        foreach($classElements['folderStructure'] as $fld=>$fldStructure) {
-            $this->_registry->pub->deleteFileDir($fld.OS.$this->_instance_name, true);
-        }
-        */
-
-        return $result;
     }
 
     /**
@@ -155,24 +107,14 @@ class seedApp extends Controller
     }
 
     /**
-     * @brief Getter della proprietà instance_name 
-     * 
-     * @return nome dell'istanza
-     */
-    public function getInstanceName() 
-    {
-        return $this->_instance_name;
-    }
-
-    /**
-     * @brief View public output
+     * @brief Output pubblico
      *
-     * @return vista view
+     * @return output view
      */
     public function view()
     {
         // codice...
-        $view = new View($this->_view_dir, 'seed_view');
+        $view = new View($this->_view_dir, 'seed_system_view');
         $dict = array();
 
         return $view->render($dict);
@@ -183,12 +125,11 @@ class seedApp extends Controller
      *
      * @return interfaccia di backoffice
      */
-    public function manageDoc()
+    public function manageSeedSystemApp()
     {
         $this->requirePerm('can_admin');
 
-        $block = cleanVar($_REQUEST, 'block', 'string', '');
-        $method = 'manageDoc';
+        $method = 'manageSeedSystemApp';
 
         $link_frontend = "<a href=\"".$this->_home."?evt[$this->_instance_name-$method]&block=frontend\">"._("Frontend")."</a>";
         /* $link_options = "<a href=\"".$this->_home."?evt[$this->_class_name-$method]&block=options\">"._("Opzioni")."</a>"; */
@@ -196,7 +137,7 @@ class seedApp extends Controller
 
         $sel_link = $link_dft;
 
-        if($block == 'frontend' && $this->userHasPerm('can_admin')) {
+        if($this->_block == 'frontend' && $this->userHasPerm('can_admin')) {
             $buffer = $this->manageFrontend();
             $sel_link = $link_frontend;
         }
@@ -207,7 +148,7 @@ class seedApp extends Controller
         }
         */
         else {
-            $buffer = $this->manageSeedModel();
+            $buffer = $this->manageSeedSystemModel();
         }
 
         // groups privileges
@@ -215,7 +156,7 @@ class seedApp extends Controller
         $links_array = array($link_frontend, $link_dft);
 
         $dict = array(
-          'title' => _('SeedModel'),
+          'title' => _('SeedSystemApp'),
           'links' => $links_array,
           'selected_link' => $sel_link,
           'content' => $buffer
@@ -231,12 +172,13 @@ class seedApp extends Controller
      *
      * @return interfaccia di amministrazione
      */
-    public function manageSeedModel()
+    public function manageSeedSystemModel()
     {
+        $registry = registry::instance();
         $admin_table = Loader::load('AdminTable', array($this, array()));
 
         $buffer = $admin_table->backoffice(
-            'SeedModel',
+            'SeedSystemModel',
             array(), // display options
             array(), // form options
             array()  // fields options
