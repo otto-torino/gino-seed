@@ -35,6 +35,17 @@ class seedApp extends Controller
         $this->_data_www = $this->_data_www."/".$this->_instance_name;
 
         $this->_view_dir = dirname(__FILE__).OS.'views';
+
+        /* options
+        $this->_optionsValue = array(
+            'title'=>_('TItolo'),
+        );
+        $this->_title = htmlChars($this->setOption('title', array('value'=>$this->_optionsValue['title'])));
+        $this->_options = loader::load('Options', array($this->_class_name, $this->_instance));
+        $this->_optionsLabels = array(
+            "title"=>_("Titolo"), 
+        );
+        */
     }
 
     /**
@@ -100,9 +111,11 @@ class seedApp extends Controller
         /*
          * delete folder structure
          */
+        /*
         foreach($classElements['folderStructure'] as $fld=>$fldStructure) {
             $this->_registry->pub->deleteFileDir($fld.OS.$this->_instance_name, true);
         }
+        */
 
         return $result;
     }
@@ -178,6 +191,7 @@ class seedApp extends Controller
         $method = 'manageDoc';
 
         $link_frontend = "<a href=\"".$this->_home."?evt[$this->_instance_name-$method]&block=frontend\">"._("Frontend")."</a>";
+        /* $link_options = "<a href=\"".$this->_home."?evt[$this->_class_name-$method]&block=options\">"._("Opzioni")."</a>"; */
         $link_dft = "<a href=\"".$this->_home."?evt[".$this->_instance_name."-$method]\">"._("SeedModel")."</a>";
 
         $sel_link = $link_dft;
@@ -186,11 +200,18 @@ class seedApp extends Controller
             $buffer = $this->manageFrontend();
             $sel_link = $link_frontend;
         }
+        /*
+        elseif($block=='options') {
+            $buffer = $this->manageOptions();
+            $sel_link = $link_options;
+        }
+        */
         else {
             $buffer = $this->manageSeedModel();
         }
 
         // groups privileges
+        /* $links_array = array($link_frontend, $link_options, $link_dft); */
         $links_array = array($link_frontend, $link_dft);
 
         $dict = array(
