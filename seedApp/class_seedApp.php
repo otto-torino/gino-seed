@@ -178,7 +178,7 @@ class seedApp extends \Gino\Controller
     {
         $this->requirePerm('can_admin');
 
-        $block = cleanVar($request->GET, 'block', 'string');
+        $block = \Gino\cleanVar($request->GET, 'block', 'string');
 
         $link_frontend = sprintf('<a href="%s">%s</a>', $this->linkAdmin(array(), 'block=frontend'), _('Frontend'));
         /* $link_options = sprintf('<a href="%s">%s</a>', $this->linkAdmin(array(), 'block=options'), _('Opzioni')); */
