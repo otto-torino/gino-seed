@@ -1,6 +1,6 @@
 <?php
 /**
-* @file seed_view.php
+* @file seed_box.php
 * @brief Template per la vista box
 *
 * Variabili disponibili:

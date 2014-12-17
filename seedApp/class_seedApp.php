@@ -203,7 +203,6 @@ class seedApp extends \Gino\Controller
             return $backend;
         }
 
-        // groups privileges
         /* $links_array = array($link_frontend, $link_options, $link_dft); */
         $links_array = array($link_frontend, $link_dft);
 

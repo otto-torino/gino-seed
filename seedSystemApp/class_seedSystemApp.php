@@ -1,45 +1,51 @@
 <?php
 /**
  * @file class_seedSystemApp.php
- * @brief Seed App
- * @author marco guidotti
- * @author abidibo
- * @version 0.1
- * @date 2014-03-06
- */
-require_once('class.SeedSystemModel.php');
-/**
- * Class seedSystemApp
+ * @brief Contiene la definizione ed implementazione della classe Gino.App.SeedSystemApp.seedSystemApp
+ *
+ * @copyright 2015 Otto srl MIT License http://www.opensource.org/licenses/mit-license.php
  * @author marco guidotti <marco.guidotti@otto.to.it>
  * @author abidibo <abidibo@gmail.com>
  */
-class seedSystemApp extends Controller
-{
 
-    protected $_data_dir,
-              $_data_www,
-              $_view_dir;
+/**
+ * @namespace Gino.App.SeedSystemApp
+ * @description Namespace dell'applicazione SeedSystemApp
+ */
+namespace Gino\App\SeedSystemApp;
+
+use \Gino\View;
+
+require_once('class.SeedSystemModel.php');
+
+/**
+ * @brief Classe di tipo Gino.Controller del modulo SeedSystemApp
+ *
+ * @version 0.1.0
+ * @copyright 2015 Otto srl MIT License http://www.opensource.org/licenses/mit-license.php
+ * @author marco guidotti <marco.guidotti@otto.to.it>
+ * @author abidibo <abidibo@gmail.com>
+ */
+class seedSystemApp extends \Gino\Controller
+{
+    // private $_tbl_opt;
 
     /**
      * @brief Costruttore
      *
-     * @return oggetto di tipo seedSystemApp
+     * @return \Gino\App\SeedApp\seedSystemApp istanza di Gino.App.SeedSystemApp.seedSystemApp
      */
     public function __construct()
     {
         parent::__construct();
 
-        $this->_data_dir = $this->_data_dir.OS.$this->_instance_name;
-        $this->_data_www = $this->_data_www."/".$this->_instance_name;
-
-        $this->_view_dir = dirname(__FILE__).OS.'views';
-
         /* options
+        $this->_tbl_opt = 'seedapp_opt';
         $this->_optionsValue = array(
             'title'=>_('TItolo'),
         );
-        $this->_title = htmlChars($this->setOption('title', array('value'=>$this->_optionsValue['title'])));
-        $this->_options = loader::load('Options', array($this->_class_name, $this->_instance));
+        $this->_title = \Gino\htmlChars($this->setOption('title', array('value'=>$this->_optionsValue['title'])));
+        $this->_options = \Gino\Loader::load('Options', array($this));
         $this->_optionsLabels = array(
             "title"=>_("Titolo"), 
         );
@@ -47,10 +53,9 @@ class seedSystemApp extends Controller
     }
 
     /**
-     * @brief Restituisce alcune proprietà della classe
+     * @brief Restituisce alcune proprietà della classe utili per la generazione di nuove istanze
      *
-     * @static
-     * @return lista delle proprietà
+     * @return lista delle proprietà utilizzate per la creazione di istanze di tipo events (tabelle, css, viste, folders)
      */
     public static function getClassElements() 
     {
@@ -62,6 +67,7 @@ class seedSystemApp extends Controller
                 'seedSystemApp.css',
             ),
             "views" => array(
+                'seed_system_box.php' => _('Box'),
                 'seed_system_view.php' => _('Vista'),
             ),
             /*
@@ -73,13 +79,14 @@ class seedSystemApp extends Controller
     }
 
     /**
-     * @brief Metodi pubblici disponibili per inserimento in layout a menu
+     * @brief Metodi pubblici disponibili per inserimento in layout (non presenti nel file seedSystemApp.ini) e menu (presenti nel file seedSystemApp.ini)
      *
-     * @return lista metodi pubblici
+     * @return lista metodi NOME_METODO => array('label' => LABEL, 'permissions' = PERMISSIONS)
      */
     public static function outputFunctions() 
     {
         $list = array(
+            "box" => array("label"=>_("Box"), "permissions"=>array()),
             "view" => array("label"=>_("Vista"), "permissions"=>array()),
         );
 
@@ -87,71 +94,71 @@ class seedSystemApp extends Controller
     }
 
     /**
-     * @brief Percorso assoluto alla cartella dei contenuti 
-     * 
-     * @return percorso assoluto
-     */
-    public function getBaseAbsPath() 
-    {
-        return $this->_data_dir;
-    }
-
-    /**
-     * @brief Percorso relativo alla cartella dei contenuti 
-     * 
-     * @return percorso relativo
-     */
-    public function getBasePath() 
-    {
-        return $this->_data_www;
-    }
-
-    /**
-     * @brief Output pubblico
+     * @brief Box view
+     * @description Vista per inserimento in layout
      *
-     * @return output view
+     * @return html
      */
-    public function view()
+    public function box()
     {
         // codice...
-        $view = new View($this->_view_dir, 'seed_system_view');
+        $view = new View($this->_view_dir, 'seed_system_box');
         $dict = array();
 
         return $view->render($dict);
     }
 
     /**
-     * @brief Backoffice
+     * @brief Vista view
      *
-     * @return interfaccia di backoffice
+     * @param \Gino\Http\Request $request
+     * @return Gino.Http.Response
      */
-    public function manageSeedSystemApp()
+    public function view(\Gino\Http\Request $request)
+    {
+        // codice...
+        $view = new View($this->_view_dir, 'seed_system_view');
+        $dict = array();
+
+        $document = new \Gino\Document($view->render($dict));
+        return $document();
+    }
+
+    /**
+     * @brief Interfaccia amministrazione modulo
+     *
+     * @param \Gino\Http\Request $request istanza di Gino.Http.Request
+     * @return Gino.Http.Response
+     */
+    public function manageSeedSystemApp(\Gino\Http\Request $request)
     {
         $this->requirePerm('can_admin');
 
-        $method = 'manageSeedSystemApp';
+        $block = cleanVar($request->GET, 'block', 'string');
 
-        $link_frontend = "<a href=\"".$this->_home."?evt[$this->_instance_name-$method]&block=frontend\">"._("Frontend")."</a>";
-        /* $link_options = "<a href=\"".$this->_home."?evt[$this->_class_name-$method]&block=options\">"._("Opzioni")."</a>"; */
-        $link_dft = "<a href=\"".$this->_home."?evt[".$this->_instance_name."-$method]\">"._("SeedModel")."</a>";
-
+        $link_frontend = sprintf('<a href="%s">%s</a>', $this->linkAdmin(array(), 'block=frontend'), _('Frontend'));
+        /* $link_options = sprintf('<a href="%s">%s</a>', $this->linkAdmin(array(), 'block=options'), _('Opzioni')); */
+        $link_dft = sprintf('<a href="%s">%s</a>', $this->linkAdmin(), _('SeedSystemModel'));
         $sel_link = $link_dft;
 
-        if($this->_block == 'frontend' && $this->userHasPerm('can_admin')) {
-            $buffer = $this->manageFrontend();
+        if($block == 'frontend') {
+            $backend = $this->manageFrontend();
             $sel_link = $link_frontend;
         }
         /*
-        elseif($block=='options') {
-            $buffer = $this->manageOptions();
+        elseif($block == 'options') {
+            $backend = $this->manageOptions();
             $sel_link = $link_options;
         }
         */
         else {
-            $buffer = $this->manageSeedSystemModel();
+            $backend = $this->manageSeedSystemModel();
         }
 
-        // groups privileges
+        if(is_a($backend, '\Gino\Http\Response')) {
+            return $backend;
+        }
+
         /* $links_array = array($link_frontend, $link_options, $link_dft); */
         $links_array = array($link_frontend, $link_dft);
 
@@ -159,32 +166,31 @@ class seedSystemApp extends Controller
           'title' => _('SeedSystemApp'),
           'links' => $links_array,
           'selected_link' => $sel_link,
-          'content' => $buffer
+          'content' => $backend
         );
 
-        $view = new view(null, 'tab');
-
-        return $view->render($dict);
+        $document = new \Gino\Document($view->render($dict));
+        return $document();
     }
 
     /**
-     * @brief Interfaccia di amministrazione SeedModel
+     * @brief Interfaccia di amministrazione SeedSystemModel
      *
-     * @return interfaccia di amministrazione
+     * @param \Gino\Http\Request $request istanza di Gino.Http.Request
+     * @return Gino.Http.Redirect oppure html, interfaccia di back office
      */
     public function manageSeedSystemModel()
     {
-        $registry = registry::instance();
-        $admin_table = Loader::load('AdminTable', array($this, array()));
+        $admin_table = \Gino\Loader::load('AdminTable', array($this, array()));
 
-        $buffer = $admin_table->backoffice(
+        $backend = $admin_table->backoffice(
             'SeedSystemModel',
             array(), // display options
             array(), // form options
             array()  // fields options
         );
 
-        return $buffer;
+        return $backend;
     }
 
 }
