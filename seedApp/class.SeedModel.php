@@ -1,17 +1,34 @@
 <?php
 /**
  * @file class.SeedModel.php
- * @brief Class SeedModel
+ * @brief Contiene la definizione ed implementazione della classe Gino.App.SeedApp.SeedModel
+ *
+ * @copyright 2015 Otto srl MIT License http://www.opensource.org/licenses/mit-license.php
  * @author marco guidotti <marco.guidotti@otto.to.it>
  * @author abidibo <abidibo@gmail.com>
- * @version 0.1
- * @date 2014-03-06
  */
-class SeedModel extends Model
+
+namespace Gino\App\SeedApp;
+
+/**
+ * @brief Classe di tipo Gino.Model che rappresenta un SeedModel
+ *
+ * @version 0.1.0
+ * @copyright 2015 Otto srl MIT License http://www.opensource.org/licenses/mit-license.php
+ * @author marco guidotti <marco.guidotti@otto.to.it>
+ * @author abidibo <abidibo@gmail.com>
+ */
+class SeedModel extends \Gino\Model
 {
-    private $_controller;
     public static $table = 'seed_app_seed_model';
 
+    /**
+     * @brief Costruttore
+     *
+     * @param int $id id del record
+     * @param \Gino\App\SeedApp\seedApp $instance istanza di Gino.App.SeedApp.seedApp
+     * @return istanza di Gino.App.SeedApp.SeedModel
+     */
     public function __construct($id, $instance)
     {
         $this->_controller = $instance;
@@ -27,9 +44,9 @@ class SeedModel extends Model
     }
 
     /**
-     * @brief Casting a stringa
+     * @brief Rappresentazione a stringa dell'oggetto
      *
-     * @return rappresentazione a stringa dell'oggetto
+     * @return id
      */
     function __toString()
     {
@@ -39,9 +56,10 @@ class SeedModel extends Model
     /**
      * @brief Definizione della struttura del modello
      *
+     * @see Gino.Model::structure()
      * @param $id id dell'istanza
      *
-     * @return struttura del modello
+     * @return array, struttura del modello
      */
     public function structure($id)
     {
@@ -49,6 +67,5 @@ class SeedModel extends Model
 
         return $structure;
     }
-    
-}
 
+}
