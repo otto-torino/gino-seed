@@ -1,7 +1,7 @@
 <?php
 /**
-* @file seed_view.php
-* @brief Template per la vista view
+* @file seed_box.php
+* @brief Template per la vista box
 *
 * Variabili disponibili:
 *

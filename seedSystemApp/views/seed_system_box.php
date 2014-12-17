@@ -1,7 +1,7 @@
 <?php
 /**
-* @file seed_view.php
-* @brief Template per la vista view
+* @file seed_system_box.php
+* @brief Template per la vista box
 *
 * Variabili disponibili:
 *
@@ -11,7 +11,7 @@
 * @author abidibo abidibo@gmail.com
 */
 ?>
-<? namespace Gino\App\SeedApp; ?>
+<? namespace Gino\App\SeedSystemApp; ?>
 <? //@cond no-doxygen ?>
 <section>
 
